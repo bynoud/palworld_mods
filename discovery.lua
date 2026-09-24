@@ -77,11 +77,12 @@ RegisterKeyBind(Key.F9, function()
         print("=== [PassiveExtractor Discovery v3 - live test] F9 pressed ===")
 
         local holder = FindFirstOf("PalPlayerPartyPalHolder")
-        if not holder then
-            print("PalPlayerPartyPalHolder: NOT FOUND via FindFirstOf")
+        if not holder or not holder:IsValid() then
+            print("PalPlayerPartyPalHolder: NOT FOUND / NOT VALID via FindFirstOf")
             return
         end
-        print("Holder found: " .. holder:GetFullName())
+        local ok_name, holder_name = pcall(function() return holder:GetFullName() end)
+        print("Holder found, GetFullName() = " .. (ok_name and tostring(holder_name) or ("<error: " .. tostring(holder_name) .. ">")))
 
         local ok, pal = pcall(function() return holder:GetOtomoPal(false) end)
         if not ok then
