@@ -1,0 +1,39 @@
+// PalSchema item definition.
+// Place this file per PalSchema's expected mod layout, typically:
+//   ue4ss/Mods/PalSchema/mods/PassiveExtractor/items.jsonc
+// (PalSchema's own docs/example mods show the exact folder shape it expects —
+// check a recent working example like "New Passive Skills" on Nexus, since
+// PalSchema's schema version has changed over time.)
+{
+  "items": [
+    {
+      "StaticItemId": "PassiveExtractor_DisposableImplant",
+      "TypeA": "PalGear",           // TODO: confirm correct category for a consumable/implant item in current PalSchema schema
+      "TypeB": "None",
+      "ItemType": "Implant",         // placeholder — verify against PalSchema's supported item types
+      "Rarity": 3,
+      "IconResourceName": "Texture2D'/Game/Pal/UI/Texture/Item/Icon_ItemUI_medicine_00'", // swap for a real icon path
+      "MaxStackCount": 99,
+      "Price": 0,
+      "SellPrice": 0,
+      "WeightFloat": 0.5,
+      "Durability": 0,
+      "MagazineSize": 0,
+      "Consumable": true,           // single-use, disposed on use
+      "NameTextID": "PassiveExtractor_ImplantName",
+      "DescriptionTextID": "PassiveExtractor_ImplantDesc"
+    }
+  ],
+  "text_label": [
+    {
+      "TextID": "PassiveExtractor_ImplantName",
+      "TargetLanguage": "en",
+      "String": "Disposable Passive Implant"
+    },
+    {
+      "TextID": "PassiveExtractor_ImplantDesc",
+      "TargetLanguage": "en",
+      "String": "Contains a passive skill extracted from a Pal. Usable at an Operating Table (or wherever you wire up item consumption in main.lua)."
+    }
+  ]
+}
