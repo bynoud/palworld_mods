@@ -69,24 +69,37 @@ local function dump_matching(obj, keywords, label)
     end
 end
 
+-- Live-test version: instead of hand-tracing the object dump, just call
+-- the candidate function and ask the result what it actually is via
+-- GetFullName() (a confirmed-real UE4SS Lua method).
 RegisterKeyBind(Key.F9, function()
     ExecuteInGameThread(function()
-        print("=== [PassiveExtractor Discovery v2] F9 pressed ===")
+        print("=== [PassiveExtractor Discovery v3 - live test] F9 pressed ===")
 
-        local player = FindFirstOf("PalPlayerCharacter")
-        print("PalPlayerCharacter found:", player ~= nil)
-        if player then
-            dump_matching(player, {"otomo", "partner", "party"}, "PalPlayerCharacter (looking for the active Pal reference)")
-            dump_matching(player, {"inventory", "item", "additem"}, "PalPlayerCharacter (looking for inventory/add-item)")
+        local holder = FindFirstOf("PalPlayerPartyPalHolder")
+        if not holder then
+            print("PalPlayerPartyPalHolder: NOT FOUND via FindFirstOf")
+            return
+        end
+        print("Holder found: " .. holder:GetFullName())
+
+        local ok, pal = pcall(function() return holder:GetOtomoPal(false) end)
+        if not ok then
+            print("GetOtomoPal(false) call FAILED — error: " .. tostring(pal))
+            return
+        end
+        if not pal or not pal:IsValid() then
+            print("GetOtomoPal(false) returned nil/invalid — is a Pal actually out as your partner?")
+            return
         end
 
-        -- If the above surfaces a handle-returning function, call it here
-        -- once you know its name, then dump ITS properties/functions too,
-        -- e.g.:
-        -- local otomo = player:GetOtomoPalHandle()  -- placeholder name
-        -- dump_matching(otomo, {"passive", "skill"}, "Otomo Pal handle (looking for passive list)")
+        print("GetOtomoPal(false) returned: " .. pal:GetFullName())
+        -- GetFullName() prints as "ClassName /Path/To/Instance" — the first
+        -- word IS the real class name we've been hunting for.
 
-        print("=== end scan ===")
+        -- Once we see that class name, next step is checking IT for a
+        -- passive-related property, e.g.:
+        -- print(pal.PassiveSkillList)  -- try this once we know a real field name
     end)
 end)
 
